@@ -1,0 +1,36 @@
+We modified mouse tracker program posted on YouTube and Github (Original link below) for our friend's research video input. 
+So that the program can work with a different input video. 
+
+<Original Author's Posts>
+YouTube: 
+https://www.youtube.com/watch?v=GebcshN4OdE&feature=youtu.be
+
+Github:
+https://github.com/colinlaney/animal-tracking
+
+Major modification is summarized as follows. 
+1.Input preprocessing
+Dimension of preprocessed each frame has been modified because our input has a different frame dimension. 
+e.g. 
+from: frame = frame[:, w-h : w] #Original Preprocessed frame
+to: frame = (255-frame[285:1080-270,695:1920-700]) #Modified Preprocess frame. 
+
+Note: Since mouse in our video input is black, we need to invert the color of the mouse in each frame. 
+This is why there is '255' term in the modified code. 
+Furthermore, to make object tracking task easier, we manually found optimized dimension of frame that will be used during tracking.
+e.g.frame[285:1080-270,695:1920-700] : chosen frame from a whole big frame which contains unusful information for the tracking task. 
+
+2.Manual height of frame modification.
+e.g. h=525
+
+If you take a look at the original python script closely, we need to adjust variable 'h' whenever our proprocessing on each frame changes row dimension of the frame
+because this h is utilized for cv2.warpPerspective(frame, perspectiveMatrix[name], (h,h))  (line 151). 
+In our practice, we choose height (a.k.a 'h' ) as 525. 
+
+3.Removal of background subtraction step.
+Unlike the original script, we removed background subtraction step e.g. cv.subract(frame, background) (line 222). 
+This is simply because we get a proper processed data for tracking task. This part will be needed to be modified for universal application. i.e., any video input
+
+
+
+Note: For the other major steps, please refer to the origial post on Github. 
